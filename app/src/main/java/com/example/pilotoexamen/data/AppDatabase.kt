@@ -5,11 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.pilotoexamen.data.dao.ExpenseDao
+import com.example.pilotoexamen.data.dao.IncomeDao
 import com.example.pilotoexamen.data.entities.ExpenseEntity
+import com.example.pilotoexamen.data.entities.IncomeEntity
 
-@Database(entities = [ExpenseEntity::class], version = 1)
+@Database(entities = [ExpenseEntity::class, IncomeEntity::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun expenseDao(): ExpenseDao
+    abstract fun incomeDao(): IncomeDao
 
     companion object {
         @Volatile
@@ -21,7 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
-                ).build().also { INSTANCE = it }
+                ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
             }
         }
     }

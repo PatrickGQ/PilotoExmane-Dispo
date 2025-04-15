@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.pilotoexamen.data.entities.ExpenseEntity
 import com.example.pilotoexamen.presentation.viewmodel.ExpenseViewModel
+import com.example.pilotoexamen.util.NotificationUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -98,13 +99,25 @@ fun ExpenseScreen(viewModel: ExpenseViewModel) {
                     val priceValue = price.text.toDoubleOrNull()
                     if (priceValue != null && name.text.isNotBlank()) {
                         coroutineScope.launch {
-                            viewModel.addExpense(
+                            val result = viewModel.addExpense(
                                 name = name.text,
                                 price = priceValue,
                                 description = description.text,
                                 date = System.currentTimeMillis()
                             )
-                            Toast.makeText(context, "Gasto registrado", Toast.LENGTH_SHORT).show()
+
+                            if (result) {
+                                Toast.makeText(context, "Gasto registrado", Toast.LENGTH_SHORT).show()
+
+                                expenses.clear()
+                                expenses.addAll(viewModel.getAllExpenses())
+
+                                name = TextFieldValue("")
+                                price = TextFieldValue("")
+                                description = TextFieldValue("")
+                            } else {
+                                Toast.makeText(context, "No tienes ingresos suficientes", Toast.LENGTH_SHORT).show()
+                            }
 
                             expenses.clear()
                             expenses.addAll(viewModel.getAllExpenses())
